@@ -72,10 +72,33 @@ def test_create_rooted_spanning_tree():
 
 ###########
 
+def post_traverse(G, node, marked, mapping, current_value):
+    print "TRAVERSING node: %s" % node
+    marked[node] = 1
+    for neighbor in reversed(list(G[node])):
+        color = G[node][neighbor]
+        if neighbor not in marked:
+            if color == 'green':
+                new_value = post_traverse(G, neighbor, marked, mapping, current_value)
+                marked[neighbor] = 1
+                current_value = new_value
+            else:
+                print "neighbor was red:", neighbor
+        else:
+            print "neighbor was already marked:", neighbor
+
+    mapping[node] = current_value
+
+    return current_value + 1
+
+
 def post_order(S, root):
     # return mapping between nodes of S and the post-order value
     # of that node
-    pass
+
+    mapping = {}
+    post_traverse(S, root, {}, mapping, 1)
+    return mapping
 
 # This is just one possible solution
 # There are other ways to create a
@@ -93,7 +116,7 @@ def test_post_order():
          'g': {'e': 'green', 'f': 'red'}
          }
     po = post_order(S, 'a')
-    assert po == {'a':7, 'b':1, 'c':6, 'd':5, 'e':4, 'f':2, 'g':3}
+    assert po == {'a':7, 'b':1, 'c':6, 'd':5, 'e':4, 'f':2, 'g':3}, "po was: %s" % po
 
 ##############
 
@@ -179,9 +202,9 @@ def test_bridge_edges():
     bridges = bridge_edges(G, 'a')
     assert bridges == [('d', 'e')]
 
-test_bridge_edges()
-test_create_rooted_spanning_tree()
-test_highest_post_order()
-test_lowest_post_order()
-test_number_of_descendants()
+# test_bridge_edges()
+# test_create_rooted_spanning_tree()
+# test_highest_post_order()
+# test_lowest_post_order()
+# test_number_of_descendants()
 test_post_order()
