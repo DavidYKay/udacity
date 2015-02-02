@@ -157,7 +157,7 @@ def test_number_of_descendants():
 
 ###############
 
-def dfs(G, node, po, marked, mapping, reds_used):
+def dfs_lowest(G, node, po, marked, mapping, reds_used):
     lowest_postorder = po[node]
     marked[node] = True
     # is this ok? Seems fishy.
@@ -167,12 +167,12 @@ def dfs(G, node, po, marked, mapping, reds_used):
         if neighbor not in marked:
             color = G[node][neighbor]
             if color == 'green':
-                value = dfs(G, neighbor, po, marked, mapping, reds_used)
+                value = dfs_lowest(G, neighbor, po, marked, mapping, reds_used)
                 lowest_postorder = min(value, lowest_postorder)
             elif color == 'red' and reds_used < 1:
                 # print "USING A RED:", neighbor
                 reds_used += 1
-                value = dfs(G, neighbor, po, marked, mapping, reds_used)
+                value = dfs_lowest(G, neighbor, po, marked, mapping, reds_used)
                 lowest_postorder = min(value, lowest_postorder)
             else:
                 print "neighbor not valid to traverse:", neighbor
@@ -181,13 +181,37 @@ def dfs(G, node, po, marked, mapping, reds_used):
 
     return lowest_postorder
 
+def dfs_highest(G, node, po, marked, mapping, reds_used):
+    highest_postorder = po[node]
+    marked[node] = True
+    # is this ok? Seems fishy.
+    reds_used = 0
+
+    for neighbor in G[node]:
+        if neighbor not in marked:
+            color = G[node][neighbor]
+            if color == 'green':
+                value = dfs_highest(G, neighbor, po, marked, mapping, reds_used)
+                highest_postorder = max(value, highest_postorder)
+            elif color == 'red' and reds_used < 1:
+                # print "USING A RED:", neighbor
+                reds_used += 1
+                value = dfs_highest(G, neighbor, po, marked, mapping, reds_used)
+                highest_postorder = max(value, highest_postorder)
+            else:
+                print "neighbor not valid to traverse:", neighbor
+
+    mapping[node] = highest_postorder
+
+    return highest_postorder
+
 def lowest_post_order(S, root, po):
     # return a mapping of the nodes in S
     # to the lowest post order value
     # below that node
     # (and you're allowed to follow 1 red edge)
     mapping = {}
-    result = dfs(S, root, po, {}, mapping, 0)
+    result = dfs_lowest(S, root, po, {}, mapping, 0)
     return mapping
 
 def test_lowest_post_order():
@@ -211,7 +235,9 @@ def highest_post_order(S, root, po):
     # to the highest post order value
     # below that node
     # (and you're allowed to follow 1 red edge)
-    pass
+    mapping = {}
+    result = dfs_highest(S, root, po, {}, mapping, 0)
+    return mapping
 
 def test_highest_post_order():
     S = {'a': {'c': 'green', 'b': 'green'},
@@ -248,7 +274,7 @@ def test_bridge_edges():
 
 # test_bridge_edges()
 # test_create_rooted_spanning_tree()
-#test_highest_post_order()
+test_highest_post_order()
 test_lowest_post_order()
 test_number_of_descendants()
 test_post_order()
