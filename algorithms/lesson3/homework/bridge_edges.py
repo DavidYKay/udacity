@@ -1,4 +1,5 @@
 import pdb
+import operator
 
 # Bridge Edges v4
 #
@@ -42,8 +43,12 @@ import pdb
 #      'g': {'e': 'green', 'f': 'red'}
 #      }
 
+def combine_dicts(a, b, op=operator.add):
+    return dict(a.items() + b.items() +
+        [(k, op(a[k], b[k])) for k in set(b) & set(a)])
+
 def make_tree_link(G, node1, node2, color):
-    print "making link between %s and %s:" % (node1, node2)
+    print "making a %s link between %s and %s:" % (color, node1, node2)
     if node1 not in G:
         G[node1] = {}
     (G[node1])[node2] = color
@@ -52,23 +57,23 @@ def make_tree_link(G, node1, node2, color):
     (G[node2])[node1] = color
     return G
 
-def postorder_traverse(G, node, node_func, marked):
-    marked[node] = True
-    for neighbor in G[node]:
-        postorder_traverse(G, neighbor, node_func, marked)
-        node_func(node)
+def postorder_traverse(G, node, marked, node_func):
+     marked[node] = True
+     for neighbor in G[node]:
+         if neighbor not in marked:
+             postorder_traverse(G, neighbor, marked, node_func)
+             node_func(node, neighbor)
+#
+# def find_green_dfs(G, T, node, marked):
+#     marked[node] = True
+#     print "find_green:", node
+#
+#     for neighbor in G[node]:
+#         if neighbor not in marked:
+#             make_tree_link(T, node, neighbor, "green")
+#             find_green(G, T, neighbor, marked)
 
-def find_green_dfs(G, T, node, marked):
-    marked[node] = True
-    print "find_green:", node
-
-    for neighbor in G[node]:
-        if neighbor not in marked:
-            make_tree_link(T, node, neighbor, "green")
-            find_green(G, T, neighbor, marked)
-
-#BFS approach
-def find_green(G, T, node, marked):
+def bfs(G, T, node, marked, node_func):
     marked[node] = True
     todo = [node]
 
@@ -78,21 +83,45 @@ def find_green(G, T, node, marked):
         for neighbor in G[current]:
             if neighbor not in marked:
                 marked[neighbor] = True
-                make_tree_link(T, current, neighbor, "green")
+                node_func(current, neighbor)
+                # make_tree_link(T, current, neighbor, "green")
                 todo.append(neighbor)
             else:
                 print "already marked neighbor:", neighbor
     return T
 
 
+#BFS approach
+def find_green(G, T, root, marked):
+    node_func = lambda current, neighbor: make_tree_link(T, current, neighbor, "green")
+    return bfs(G, T, root, marked, node_func)
+
+def find_red_from_green(G, T, greens, root, marked):
+    def node_func(current, neighbor):
+        if current in greens and neighbor in greens[current]:
+            # greens[current][neighbor]:
+            #print "This link already exists: (%s, %s)" % (current, neighbor)
+            pass
+        else:
+            #print "Making a RED link: (%s, %s)" % (current, neighbor)
+            make_tree_link(T, current, neighbor, "red")
+    #return bfs(G, T, root, marked, node_func)
+    return postorder_traverse(G, root, marked, node_func)
+
 def create_rooted_spanning_tree(G, root):
     green = find_green(G, {}, root, {})
+
+    reds = {}
+    find_red_from_green(G, reds, green, root, {})
+
+    total = combine_dicts(green, reds, op=combine_dicts)
+
     #postorder_traverse(G, S, root, {}
     # first, perform a DFS to establish all of the green edges
 
     # second, perform a traversal of our tree to add the red edges
 
-    return green
+    return total
 
 # This is just one possible solution
 # There are other ways to create a
@@ -326,6 +355,6 @@ def test_bridge_edges():
 # test_bridge_edges()
 test_create_rooted_spanning_tree()
 #test_highest_post_order()
-test_lowest_post_order()
+#test_lowest_post_order()
 test_number_of_descendants()
 test_post_order()
