@@ -86,15 +86,13 @@ def find_green(G, T, node, marked):
 
 
 def create_rooted_spanning_tree(G, root):
-    S = {}
-
-    find_green(G, S, root, {})
+    green = find_green(G, {}, root, {})
     #postorder_traverse(G, S, root, {}
     # first, perform a DFS to establish all of the green edges
 
     # second, perform a traversal of our tree to add the red edges
 
-    return S
+    return green
 
 # This is just one possible solution
 # There are other ways to create a
