@@ -1,0 +1,11 @@
+Erdos-Renyi graph
+
+n = 256
+p = 0.25
+
+how many edges on average? 64
+
+generate n nodes
+for each node pair, i,j, connect i,j with probability p
+
+

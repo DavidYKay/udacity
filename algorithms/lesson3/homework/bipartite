@@ -1,0 +1,7 @@
+V = a node
+Kv = node's degree
+Nv = # of links between neighbors of v
+
+2Nv / (Kv * (Kv-1))
+
+

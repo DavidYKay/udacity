@@ -1,0 +1,33 @@
+n = 6 (3 x 2)
+m = 7
+
+n = 20 (4 x 5)
+m = 15 + 16 = 31
+
+n = 25 (5 x 5)
+w = 5
+m = 40 = 2*(w * (w-1)) = 2(w^2 - w) = 2w^2 - 2w
+
+n = 256 (16 x 16)
+m = 480
+
+
+Grid Network
+Number of vertices / number of nodes
+n nodes
+m vertices
+w = width
+m = 40 = 2*(w * (w-1)) = 2(w^2 - w) = 2w^2 - 2w
+
+
+Big Theta:
+Set of functions that grow "equally quickly" as g(n)
+
+f(n) is a member of Theta(g(n)) iff:
+c1g(n) <= f(n) <= c2g(n)
+
+
+
+Big Oh:
+
+

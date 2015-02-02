@@ -1,0 +1,17 @@
+V = a node
+Kv = node's degree
+Nv = # of links between neighbors of v
+
+2Nv / (Kv * (Kv-1))
+
+V = ORD
+Kv = 4 [SEA, LAX, DFW, PIT]
+Nv = 2 [SEA-LAX, LAX-DFW] 
+
+2 * 2 / (4 * 3) 
+4 / 12
+1 / 3
+
+Social networks often have clustering coefficient between .1-.8.
+
+Connected components

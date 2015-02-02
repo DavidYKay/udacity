@@ -1,0 +1,10 @@
+n = 4 = 2^2
+m = 4
+
+every node has a bit pattern
+
+00, 01
+10, 11
+connect if nodes differ by one bit
+Like a one-hot scheme!
+

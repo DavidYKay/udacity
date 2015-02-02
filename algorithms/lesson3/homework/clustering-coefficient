@@ -1,0 +1,57 @@
+A: 
+
+Kv = 5
+Nv = 5
+
+10 / (5 * 4)
+10 / 20
+.5
+
+B:
+
+Kv = 7
+Nv = 2
+
+4 / (7 *6)
+4 / 42
+2 / 21
+
+C:
+
+0
+
+D:
+
+Kv = 4
+Nv = 6
+
+12 / 4 * 3
+12 / 12
+1
+
+E: 
+
+Kv = 7
+Nv = 7
+
+14 / 7 * 6
+14 / 42
+1/3
+
+F:
+
+Kv = 5
+Nv = 2
+
+4 / 20
+1 / 5
+
+
+CBFEAD
+
+
+V = a node
+Kv = node's degree
+Nv = # of links between neighbors of v
+
+2Nv / (Kv * (Kv-1))
