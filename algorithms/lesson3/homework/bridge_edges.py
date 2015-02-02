@@ -128,13 +128,10 @@ def descendants_recur(G, node, marked, descendants):
     for child in G[node]:
         color = G[node][child]
         if child not in marked and color == 'green':
-            #num_descendants += 1
             child_descendants = descendants_recur(G, child, marked, descendants)
             num_descendants += child_descendants
 
     descendants[node] = num_descendants
-
-    # :print "%s had %s descendants" % (node, num_descendants)
 
     return num_descendants
 
@@ -160,12 +157,37 @@ def test_number_of_descendants():
 
 ###############
 
+def dfs(G, node, po, marked, mapping, reds_used):
+    lowest_postorder = po[node]
+    marked[node] = True
+    # reds_used = 0
+
+    for neighbor in G[node]:
+        if neighbor not in marked:
+            color = G[node][neighbor]
+            if color == 'green':
+                value = dfs(G, neighbor, po, marked, mapping, reds_used)
+                lowest_postorder = min(value, lowest_postorder)
+            elif color == 'red' and reds_used < 1:
+                print "USING A RED:", neighbor
+                reds_used += 1
+                value = dfs(G, neighbor, po, marked, mapping, reds_used)
+                lowest_postorder = min(value, lowest_postorder)
+            else:
+                print "neighbor not valid to traverse:", neighbor
+
+    mapping[node] = lowest_postorder
+
+    return lowest_postorder
+
 def lowest_post_order(S, root, po):
     # return a mapping of the nodes in S
     # to the lowest post order value
     # below that node
     # (and you're allowed to follow 1 red edge)
-    pass
+    mapping = {}
+    result = dfs(S, root, po, {}, mapping, 0)
+    return mapping
 
 def test_lowest_post_order():
     S = {'a': {'c': 'green', 'b': 'green'},
@@ -178,7 +200,7 @@ def test_lowest_post_order():
          }
     po = post_order(S, 'a')
     l = lowest_post_order(S, 'a', po)
-    assert l == {'a':1, 'b':1, 'c':1, 'd':1, 'e':2, 'f':2, 'g':2}
+    assert l == {'a':1, 'b':1, 'c':1, 'd':1, 'e':2, 'f':2, 'g':2}, "lowest: %s" % l
 
 
 ################
@@ -226,6 +248,6 @@ def test_bridge_edges():
 # test_bridge_edges()
 # test_create_rooted_spanning_tree()
 #test_highest_post_order()
-# test_lowest_post_order()
+test_lowest_post_order()
 test_number_of_descendants()
 test_post_order()

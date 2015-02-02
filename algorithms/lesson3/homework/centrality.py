@@ -8,19 +8,14 @@
 import pdb
 
 def dfs(G, node, marked, depth_max):
-    #print "dfs: %s marked: %s depth: %s" % (node, marked, depth_max)
-    #print "dfs: %s depth: %s" % (node, depth_max)
     marked[node] = True
     depths = [depth_max]
     for neighbor in G[node]:
-        # pdb.set_trace()
         if neighbor not in marked:
-            # print "%s is a neighbor of: %s" % (neighbor, node)
             depth = dfs(G, neighbor, marked, depth_max + 1)
             depths.append(depth)
 
     depth_max = max(depths)
-    # print "depth_max:", depth_max
     return depth_max
 
 
