@@ -160,7 +160,8 @@ def test_number_of_descendants():
 def dfs(G, node, po, marked, mapping, reds_used):
     lowest_postorder = po[node]
     marked[node] = True
-    # reds_used = 0
+    # is this ok? Seems fishy.
+    reds_used = 0
 
     for neighbor in G[node]:
         if neighbor not in marked:
@@ -169,7 +170,7 @@ def dfs(G, node, po, marked, mapping, reds_used):
                 value = dfs(G, neighbor, po, marked, mapping, reds_used)
                 lowest_postorder = min(value, lowest_postorder)
             elif color == 'red' and reds_used < 1:
-                print "USING A RED:", neighbor
+                # print "USING A RED:", neighbor
                 reds_used += 1
                 value = dfs(G, neighbor, po, marked, mapping, reds_used)
                 lowest_postorder = min(value, lowest_postorder)
