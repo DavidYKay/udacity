@@ -73,7 +73,7 @@ def test_create_rooted_spanning_tree():
 ###########
 
 def post_traverse(G, node, marked, mapping, current_value):
-    print "TRAVERSING node: %s" % node
+    # print "TRAVERSING node: %s" % node
     marked[node] = 1
     for neighbor in reversed(list(G[node])):
         color = G[node][neighbor]
@@ -83,9 +83,11 @@ def post_traverse(G, node, marked, mapping, current_value):
                 marked[neighbor] = 1
                 current_value = new_value
             else:
-                print "neighbor was red:", neighbor
+                pass
+                #print "neighbor was red:", neighbor
         else:
-            print "neighbor was already marked:", neighbor
+            pass
+            #print "neighbor was already marked:", neighbor
 
     mapping[node] = current_value
 
@@ -95,7 +97,6 @@ def post_traverse(G, node, marked, mapping, current_value):
 def post_order(S, root):
     # return mapping between nodes of S and the post-order value
     # of that node
-
     mapping = {}
     post_traverse(S, root, {}, mapping, 1)
     return mapping
@@ -120,10 +121,30 @@ def test_post_order():
 
 ##############
 
+def descendants_recur(G, node, marked, descendants):
+    marked[node] = True
+    num_descendants = 1
+
+    for child in G[node]:
+        color = G[node][child]
+        if child not in marked and color == 'green':
+            #num_descendants += 1
+            child_descendants = descendants_recur(G, child, marked, descendants)
+            num_descendants += child_descendants
+
+    descendants[node] = num_descendants
+
+    # :print "%s had %s descendants" % (node, num_descendants)
+
+    return num_descendants
+
+
 def number_of_descendants(S, root):
     # return mapping between nodes of S and the number of descendants
     # of that node
-    pass
+    descendants = {}
+    descendants_recur(S, root, {}, descendants)
+    return descendants
 
 def test_number_of_descendants():
     S =  {'a': {'c': 'green', 'b': 'green'},
@@ -135,7 +156,7 @@ def test_number_of_descendants():
           'g': {'e': 'green', 'f': 'red'}
           }
     nd = number_of_descendants(S, 'a')
-    assert nd == {'a':7, 'b':1, 'c':5, 'd':4, 'e':3, 'f':1, 'g':1}
+    assert nd == {'a':7, 'b':1, 'c':5, 'd':4, 'e':3, 'f':1, 'g':1}, "ND: %s" % nd
 
 ###############
 
@@ -204,7 +225,7 @@ def test_bridge_edges():
 
 # test_bridge_edges()
 # test_create_rooted_spanning_tree()
-# test_highest_post_order()
+#test_highest_post_order()
 # test_lowest_post_order()
-# test_number_of_descendants()
+test_number_of_descendants()
 test_post_order()
