@@ -163,7 +163,7 @@ def dfs_lowest(G, node, po, marked, mapping, reds_used):
     # is this ok? Seems fishy.
     reds_used = 0
 
-    for neighbor in G[node]:
+    for neighbor in reversed(list(G[node])):
         if neighbor not in marked:
             color = G[node][neighbor]
             if color == 'green':
@@ -182,19 +182,20 @@ def dfs_lowest(G, node, po, marked, mapping, reds_used):
     return lowest_postorder
 
 def dfs_highest(G, node, po, marked, mapping, reds_used):
+    print "Traversing node:", node
     highest_postorder = po[node]
     marked[node] = True
     # is this ok? Seems fishy.
     reds_used = 0
 
-    for neighbor in G[node]:
+    for neighbor in reversed(list(G[node])):
         if neighbor not in marked:
             color = G[node][neighbor]
             if color == 'green':
                 value = dfs_highest(G, neighbor, po, marked, mapping, reds_used)
                 highest_postorder = max(value, highest_postorder)
             elif color == 'red' and reds_used < 1:
-                # print "USING A RED:", neighbor
+                print "USING A RED:", neighbor
                 reds_used += 1
                 value = dfs_highest(G, neighbor, po, marked, mapping, reds_used)
                 highest_postorder = max(value, highest_postorder)
@@ -202,6 +203,7 @@ def dfs_highest(G, node, po, marked, mapping, reds_used):
                 print "neighbor not valid to traverse:", neighbor
 
     mapping[node] = highest_postorder
+    print "Highest for node: %s was: %s" % (node, highest_postorder)
 
     return highest_postorder
 
@@ -250,7 +252,7 @@ def test_highest_post_order():
          }
     po = post_order(S, 'a')
     h = highest_post_order(S, 'a', po)
-    assert h == {'a':7, 'b':5, 'c':6, 'd':5, 'e':4, 'f':3, 'g':3}
+    assert h == {'a':7, 'b':5, 'c':6, 'd':5, 'e':4, 'f':3, 'g':3}, "highest: %s" % h
 
 #################
 
