@@ -1,3 +1,5 @@
+import pdb
+
 # Bridge Edges v4
 #
 # Find the bridge edges in a graph given the
@@ -39,10 +41,59 @@
 #      'f': {'e': 'green', 'g': 'red'},
 #      'g': {'e': 'green', 'f': 'red'}
 #      }
-#
+
+def make_tree_link(G, node1, node2, color):
+    print "making link between %s and %s:" % (node1, node2)
+    if node1 not in G:
+        G[node1] = {}
+    (G[node1])[node2] = color
+    if node2 not in G:
+        G[node2] = {}
+    (G[node2])[node1] = color
+    return G
+
+def postorder_traverse(G, node, node_func, marked):
+    marked[node] = True
+    for neighbor in G[node]:
+        postorder_traverse(G, neighbor, node_func, marked)
+        node_func(node)
+
+def find_green_dfs(G, T, node, marked):
+    marked[node] = True
+    print "find_green:", node
+
+    for neighbor in G[node]:
+        if neighbor not in marked:
+            make_tree_link(T, node, neighbor, "green")
+            find_green(G, T, neighbor, marked)
+
+#BFS approach
+def find_green(G, T, node, marked):
+    marked[node] = True
+    todo = [node]
+
+    while len(todo) > 0:
+        current = todo[0]
+        del todo[0]
+        for neighbor in G[current]:
+            if neighbor not in marked:
+                marked[neighbor] = True
+                make_tree_link(T, current, neighbor, "green")
+                todo.append(neighbor)
+            else:
+                print "already marked neighbor:", neighbor
+    return T
+
+
 def create_rooted_spanning_tree(G, root):
     S = {}
-    # your code here
+
+    find_green(G, S, root, {})
+    #postorder_traverse(G, S, root, {}
+    # first, perform a DFS to establish all of the green edges
+
+    # second, perform a traversal of our tree to add the red edges
+
     return S
 
 # This is just one possible solution
@@ -68,7 +119,7 @@ def test_create_rooted_spanning_tree():
                  'e': {'d': 'green', 'g': 'green', 'f': 'green'},
                  'f': {'e': 'green', 'g': 'red'},
                  'g': {'e': 'green', 'f': 'red'}
-                 }
+                 }, "Spanning tree: %s" % S
 
 ###########
 
@@ -275,8 +326,8 @@ def test_bridge_edges():
     assert bridges == [('d', 'e')]
 
 # test_bridge_edges()
-# test_create_rooted_spanning_tree()
-test_highest_post_order()
+test_create_rooted_spanning_tree()
+#test_highest_post_order()
 test_lowest_post_order()
 test_number_of_descendants()
 test_post_order()
