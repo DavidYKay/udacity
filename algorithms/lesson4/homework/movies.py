@@ -1,5 +1,7 @@
 import unittest
 import operator
+import math
+from joblib import Parallel, delayed
 
 def make_link(G, node1, node2):
     if node1 not in G:
@@ -13,6 +15,7 @@ def make_link(G, node1, node2):
 
 
 def centrality(G, v):
+  print "finding centrality for:", v
   #distance_from_start = {}
   distance_from_start = {v: 0}
   open_list = [v]
@@ -41,6 +44,12 @@ def import_movies():
     make_link(G, actor, (year, movie))
 
   return G
+
+def setItem(d, k, v):
+  print "setItem: %s[%s] = %s" % (d, k, v)
+  d[k] = v
+
+#def make_centrality(G, k):
 
 
 class TestSequenceFunctions(unittest.TestCase):
@@ -90,25 +99,37 @@ class TestSequenceFunctions(unittest.TestCase):
     self.assertEqual(best, "De Niro, Robert")
     #self.assertEqual(centralities[best], 2)
 
+
   def test_top_central_all(self):
     G = import_movies()
 
     counter = 0
     centralities = {}
-    for k,v in G.items():
-      if is_actor(k):
-        print "checking actor %s" % counter
-        centralities[k] = centrality(G, k)
-        counter += 1
 
-    #print len(centralities
 
-    #sorted(centralities, key=lambda x: centralities[x])
-    #centralities.sort(key=lambda x: centralities[x])
+    # for k,v in G.items():
+    #   if is_actor(k):
+    #     print "checking actor %s" % counter
+    #     centralities[k] = centrality(G, k)
+    #     counter += 1
+    centralities = {k:centrality(G,k) for k,v in G.items() if is_actor(k)}
+
+    #centralities = Parallel(n_jobs=6)(delayed(math.sqrt)(i ** 2) for i in range(10))
+    #centralities = Parallel(n_jobs=6)(delayed(math.sqrt)(i ** 2) for i in range(10))
+
+    #results = Parallel(n_jobs=6)(delayed(setItem)(centralities, i, 9) for i in range(10))
+    #results = Parallel(n_jobs=2)(delayed(centrality)(G, k) for k,v in G.items() if is_actor(k))
+    #results = Parallel(n_jobs=1, backend="threading")(delayed(centrality)(G, k) for k,v in G.items() if is_actor(k))
+
+    #centralities = Parallel(n_jobs=6)(delayed(i) for i in range(10))
+    #centralities = Parallel(n_jobs=6)[i for i in range(10)]
+    #print "results:", results
+
+    print "centralities:", centralities
 
     sorted_x = sorted(centralities.items(), key=operator.itemgetter(1))
-    target_a = centralities[19:20]
-    target_b = centralities[-20:-19]
+    target_a = sorted_x[19:20]
+    target_b = sorted_x[-20:-19]
 
     print "# actors:", len(centralities)
 
