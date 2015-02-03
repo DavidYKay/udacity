@@ -29,7 +29,6 @@ def top_k(L, k):
   print "finding %s elements in list: %s" %(k, L)
   assert L
   v = L[random.randrange(len(L))]
-  #v = random.choice(L)
   (left, middle, right) = partition(L,v)
   print "partitions:", left, middle, right
   if len(left) == k:
@@ -44,7 +43,6 @@ def top_k(L, k):
     print "recursing left side"
     return top_k(left, k)
   print "recursing right side"
-  #return left + middle + top_k(right, k - len(left) - 1)
   return left + middle + top_k(right, k - len(left) - len(middle))
 
 def mean(L):
