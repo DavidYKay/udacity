@@ -355,6 +355,6 @@ def test_bridge_edges():
 # test_bridge_edges()
 test_create_rooted_spanning_tree()
 #test_highest_post_order()
-#test_lowest_post_order()
+test_lowest_post_order()
 test_number_of_descendants()
 test_post_order()
