@@ -26,12 +26,22 @@ def partition(L, v):
     return P
 
 def top_k(L, k):
+  print "finding %s elements in list: %s" %(k, L)
   v = L[random.randrange(len(L))]
   (left, middle, right) = partition(L,v)
-  if len(left) == k: return left
-  if len(left)+len(middle) == k: return left+middle
-  if len(left) > k: return top_k(left, k)
-  return left + middle + top_k(right, k - len(left) - 1)
+  print "partitions:", left, middle, right
+  if len(left) == k:
+    print "returning LEFT:", left
+    return left
+  if len(left)+len(middle) == k:
+    print "returning LEFT + Middle:", left + middle
+    return left+middle
+  if len(left) > k:
+    print "recursing left side"
+    return top_k(left, k)
+  print "recursing right side"
+  #return left + middle + top_k(right, k - len(left) - 1)
+  return left + middle + top_k(right, k - len(left) - len(middle))
 
 def mean(L):
   return float(sum(L)) / len(L)
@@ -46,20 +56,39 @@ def median(L):
     count = (len(L) / 2) + 1
 
   lesser_half = top_k(L, count)
+  greater_half = list(L)
+  for item in lesser_half:
+    greater_half.remove(item)
+
+  print "lesser_half:", lesser_half
+  print "greater_half:", greater_half
+
+  assert len(lesser_half)  == count, "Count for LESSER was: %s but should be: %s" % (len(lesser_half), count)
 
   if even:
-    greater_half = list(L)
-    for item in lesser_half:
-      greater_half.remove(item)
     pair = (min(greater_half), max(lesser_half))
     print "lesser_half count:", len(lesser_half)
     print "greater_half count:", len(greater_half)
-    print "lesser_half:", lesser_half
-    print "greater_half:", greater_half
     print "median pair:", pair
-    return mean(pair)
+
+    result = mean(pair)
+    assert len(greater_half) == count, "Count for GREATER was: %s but should be: %s" % (len(greater_half), count)
+
+    for item in lesser_half:
+      assert item <= result
+
+    for item in greater_half:
+      assert item >= result
+
+    return result
   else:
-    return lesser_half[-1]
+    #result = lesser_half[-1]
+    result = max(lesser_half)
+    for item in lesser_half:
+      assert item <= result, "item in lesser half (%s) is not smaller than the median of %s" % (item, result)
+    for item in greater_half:
+      assert item >= result, "item in greater half (%s) is not smaller than the median of %s" % (item, result)
+    return result
 
   return random_index
 
@@ -146,6 +175,13 @@ class TestPartitionFunctions(unittest.TestCase):
         1000, -999]
     self.assertEqual(set(top_k(example, 2)), {-990, -999})
 
+
+class ProblemTests(unittest.TestCase):
+  def test_duplicates_tiny(self):
+    example = [3,1,2,4,1]
+    expected_median = 2
+    self.assertEqual(minimize_absolute(example), expected_median)
+
 class TestSequenceFunctions(unittest.TestCase):
 
   def test_easy(self):
@@ -175,10 +211,6 @@ class TestSequenceFunctions(unittest.TestCase):
     self.assertEqual(len(set(example)), 99)
     self.assertEqual(minimize_absolute(example), expected_median)
 
-  #def test_duplicates_tiny(self):
-    #example = [3,1,2,4,1]
-    #expected_median = 2
-    #self.assertEqual(minimize_absolute(example), expected_median)
 
   #def test_duplicates_medium(self):
     ##pdb.set_trace()
