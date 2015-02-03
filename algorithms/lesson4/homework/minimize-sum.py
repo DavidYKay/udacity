@@ -211,16 +211,14 @@ class TestSequenceFunctions(unittest.TestCase):
     self.assertEqual(len(set(example)), 99)
     self.assertEqual(minimize_absolute(example), expected_median)
 
-
-  #def test_duplicates_medium(self):
-    ##pdb.set_trace()
-    #example = [-26, 48, -6, 0, -93, -39, -44, -3, -85, 30,
-        #-27, -8, 79, 68, -84, -39, -8, 7, 97, 15,
-        #76, -56, 58, -84, 48, -26, -89, -85, -53, -86,
-        #9, -52, 41, 44, -63, 93, -96, -76, -84, -30,
-        #72, -91, 74, 82, 22, 93, -67, 5, 100, -78]
-    #expected_median = -8
-    #self.assertEqual(minimize_absolute(example), expected_median)
+  def test_duplicates_medium(self):
+    example = [-26, 48, -6, 0, -93, -39, -44, -3, -85, 30,
+        -27, -8, 79, 68, -84, -39, -8, 7, 97, 15,
+        76, -56, 58, -84, 48, -26, -89, -85, -53, -86,
+        9, -52, 41, 44, -63, 93, -96, -76, -84, -30,
+        72, -91, 74, 82, 22, 93, -67, 5, 100, -78]
+    expected_median = -8
+    self.assertEqual(minimize_absolute(example), expected_median)
 
   #def test_excel(self):
     #example = [-26, 48, -6, 0, -93,
