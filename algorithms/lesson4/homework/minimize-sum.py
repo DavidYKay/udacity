@@ -27,15 +27,11 @@ def partition(L, v):
 
 def top_k(L, k):
   v = L[random.randrange(len(L))]
-  #v = random.choice(L)
   (left, middle, right) = partition(L,v)
   if len(left) == k: return left
-  #if len(left)+1 == k: return left+[v]
-  if len(left)+1 == k: return left+middle
+  if len(left)+len(middle) == k: return left+middle
   if len(left) > k: return top_k(left, k)
-  #return left + [v] + top_k(right, k - len(left) - 1)
   return left + middle + top_k(right, k - len(left) - 1)
-
 
 def mean(L):
   return float(sum(L)) / len(L)
@@ -119,8 +115,36 @@ def minimize_absolute(L):
 
 
 
+class TestPartitionFunctions(unittest.TestCase):
+  def test_duplicates_tiny(self):
+    example = [3,1,2,4,1]
+    self.assertEqual(top_k(example, 2), [1, 1])
 
-
+  def test_duplicates_medium(self):
+    example = [-26, 48, -6, 0, -93,
+        10001,
+        -39, -44, -3, -85, 30,
+        -27, -8, 79, 68, -84,
+        -39, -8, 7, 97, 15,
+        76, -56, 58, -84, 48,
+        -26, -89, -85, -53, -86,
+        9, -52, 41, 44, -63,
+        -990,
+        93, -96, -76, -84, -30,
+        72, -91, 74, 82, 22,
+        93, -67, 5, 100, -78,
+        -53, -19, 29, 90, -72,
+        64, 33, 3, -1, 68,
+        79, -95, 59, -90, -28,
+        -48, -92, -35, 80, 33,
+        -21, 0, 0, 93, 20,
+        -44, 29, 17, 88, 91,
+        7, 10, -93, -91, -32,
+        -96, -79, -60, 63, 69,
+        70, -5, -61, 76, -35,
+        -8, 79, 63, 87, -47,
+        1000, -999]
+    self.assertEqual(set(top_k(example, 2)), {-990, -999})
 
 class TestSequenceFunctions(unittest.TestCase):
 
@@ -151,11 +175,10 @@ class TestSequenceFunctions(unittest.TestCase):
     self.assertEqual(len(set(example)), 99)
     self.assertEqual(minimize_absolute(example), expected_median)
 
-  def test_duplicates_tiny(self):
-    #pdb.set_trace()
-    example = [3,1,2,4,1]
-    expected_median = 2
-    self.assertEqual(minimize_absolute(example), expected_median)
+  #def test_duplicates_tiny(self):
+    #example = [3,1,2,4,1]
+    #expected_median = 2
+    #self.assertEqual(minimize_absolute(example), expected_median)
 
   #def test_duplicates_medium(self):
     ##pdb.set_trace()
