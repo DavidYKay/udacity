@@ -8,25 +8,21 @@ from operator import itemgetter
 
 
 def mode(L):
+  high = (0, 0)
   counts = {}
-  def record(item):
-    print "counting item:", item
+
+  for item in L:
+    count = 0
     if item in counts:
-      counts[item] += 1
+      count = counts[item] + 1
     else:
-      counts[item] = 1
+      count = 1
+    counts[item] = count
 
-  for item in L:
-    record(item)
+    if count > high[0]:
+      high = (count, item)
 
-  record = (0, 0)
-  for item in L:
-    count = counts[item]
-    if count > record[0]:
-      print "new high count found. %s for %s" % (count, item)
-      high = count
-      record = (count, item)
-  return record[1]
+  return high[1]
 
 ####
 # Test
