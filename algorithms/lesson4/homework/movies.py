@@ -10,14 +10,19 @@ def make_link(G, node1, node2):
     return G
 
 
+
 def centrality(G, v):
-  distance_from_start = {}
+  #distance_from_start = {}
+  distance_from_start = {v: 0}
   open_list = [v]
+  def get_distance(v):
+    return distance_from_start.get(v, 0)
   while len(open_list) > 0:
     current = open_list[0]
     del open_list[0]
     for neighbor in G[current].keys():
       if neighbor not in distance_from_start:
+        print "distance:", distance_from_start
         distance_from_start[neighbor] = distance_from_start[current] + 1
         open_list.append(neighbor)
   return (sum(distance_from_start.values())+0.0) / len(distance_from_start)
@@ -30,6 +35,7 @@ def import_movies():
   G = {}
 
   for line in f:
+    line = line.rstrip()
     actor, movie, year = line.split("\t")
     make_link(G, actor, (year, movie))
 
@@ -51,12 +57,11 @@ class TestSequenceFunctions(unittest.TestCase):
     self.assertEqual(total_count, 31383)
 
     names = [
-
-    'Sedaris, Amy',
-    'McClure, Marc (I)',
-    'Darshi, Agam',
-    'Jolie, Angelina',
-        ]
+      'Sedaris, Amy',
+      'McClure, Marc (I)',
+      'Darshi, Agam',
+      'Jolie, Angelina',
+    ]
 
     for name in names:
       self.assertTrue(G[name])
